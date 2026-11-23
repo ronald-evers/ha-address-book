@@ -1,12 +1,12 @@
 {
   "domain": "address_book",
   "name": "Address Book",
-  "codeowners": [
-    "@ronald-evers"
-  ],
   "after_dependencies": [
     "frontend",
     "panel_custom"
+  ],
+  "codeowners": [
+    "@ronald-evers"
   ],
   "config_flow": true,
   "dependencies": [
