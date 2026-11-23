@@ -247,6 +247,13 @@ def test_street_line() -> None:
     assert Household(id="h").street_line == ""
 
 
+def test_address_line() -> None:
+    """The whole address fits on one line, without gaps for what is unknown."""
+    assert _small_book().households["h1"].address_line == "Dorpsstraat 12-A, 1234 AB Ons Dorp, NL"
+    assert Household(id="h", city="Ons Dorp").address_line == "Ons Dorp"
+    assert Household(id="h").address_line == ""
+
+
 def test_deceased() -> None:
     """Someone has died when there is a date, or when the flag says so."""
     assert not Person(id="a", given_name="A").is_deceased

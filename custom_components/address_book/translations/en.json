@@ -7,6 +7,33 @@
       }
     }
   },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Address Book",
+        "data": {
+          "upcoming_days": "Days in the upcoming sensor",
+          "days_ahead": "Days ahead for a reminder",
+          "reminder_time": "Time of the daily reminder"
+        },
+        "data_description": {
+          "upcoming_days": "How far ahead sensor.address_book_upcoming looks.",
+          "days_ahead": "The address_book_reminder event fires this many days before a date, and again on the day itself. 0 means only on the day.",
+          "reminder_time": "When the address_book_reminder event fires each day."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "today": {
+        "name": "Today"
+      },
+      "upcoming": {
+        "name": "Upcoming"
+      }
+    }
+  },
   "services": {
     "set_person": {
       "name": "Add or change a person",

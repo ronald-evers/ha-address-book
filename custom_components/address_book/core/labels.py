@@ -8,6 +8,7 @@ Pure Python: no Home Assistant imports.
 
 from __future__ import annotations
 
+from .dates import OccurrenceKind
 from .kinship import Kin, Kinship
 from .model import Gender
 
@@ -103,3 +104,63 @@ def kinship_label(
     if relation.by_marriage:
         word = _BY_MARRIAGE[code].format(word)
     return word
+
+
+# kind -> (title, detail with one year, detail with more years)
+_Dates = dict[OccurrenceKind, tuple[str, str, str]]
+
+_DATES_EN: _Dates = {
+    OccurrenceKind.BIRTHDAY: ("{name}", "Turns {years}", "Turns {years}"),
+    OccurrenceKind.WEDDING_ANNIVERSARY: (
+        "Wedding anniversary: {name}",
+        "{years} year married",
+        "{years} years married",
+    ),
+    OccurrenceKind.DEATH_ANNIVERSARY: (
+        "In memory of {name}",
+        "{years} year ago",
+        "{years} years ago",
+    ),
+    OccurrenceKind.EVENT: ("{name}", "{years} year ago", "{years} years ago"),
+}
+
+_DATES_NL: _Dates = {
+    OccurrenceKind.BIRTHDAY: ("{name}", "Wordt {years}", "Wordt {years}"),
+    OccurrenceKind.WEDDING_ANNIVERSARY: (
+        "Trouwdag: {name}",
+        "{years} jaar getrouwd",
+        "{years} jaar getrouwd",
+    ),
+    OccurrenceKind.DEATH_ANNIVERSARY: (
+        "Gedenkdag: {name}",
+        "{years} jaar geleden",
+        "{years} jaar geleden",
+    ),
+    OccurrenceKind.EVENT: ("{name}", "{years} jaar geleden", "{years} jaar geleden"),
+}
+
+_DATES: dict[str, _Dates] = {"en": _DATES_EN, "nl": _DATES_NL}
+
+
+def _dates(language: str) -> _Dates:
+    code = language.split("-")[0].lower()
+    return _DATES.get(code, _DATES[DEFAULT_LANGUAGE])
+
+
+def occurrence_title(
+    kind: OccurrenceKind, name: str, language: str = DEFAULT_LANGUAGE
+) -> str:
+    """Return the calendar title: the name, or "Wedding anniversary: Tom & Iris"."""
+    return _dates(language)[kind][0].format(name=name)
+
+
+def occurrence_detail(
+    kind: OccurrenceKind, years: float | None, language: str = DEFAULT_LANGUAGE
+) -> str:
+    """Return "Turns 50" or "12½ years married"; empty when the year is unknown."""
+    if years is None:
+        return ""
+    whole = int(years)
+    number = str(whole) if whole == years else f"{whole}½"
+    _, one, more = _dates(language)[kind]
+    return (one if years == 1 else more).format(years=number)

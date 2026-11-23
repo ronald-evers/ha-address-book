@@ -3,9 +3,9 @@
 An address book inside Home Assistant: the people you know, where they live, how
 they are related, and the dates that matter.
 
-> **Early development.** The data model, its rules, the storage and the services
-> are built and tested. There is no calendar, sensor or panel yet: for now the
-> address book is filled and read through services only.
+> **Early development.** Storage, services, a calendar, two sensors and a daily
+> reminder event are built and tested. There is no panel yet: the address book
+> is filled through services.
 
 ## What it is for
 
@@ -26,6 +26,46 @@ detail.
    cousin, mother-in-law and so on are worked out from those.
 3. People are **records, not entities**: a large address book does not flood
    Home Assistant with sensors.
+
+## In Home Assistant
+
+| What | For |
+|---|---|
+| `calendar.address_book` | Birthdays, wedding anniversaries, days of remembrance and events. Title: the name. Location: the postal address on one line. Description: the age when known ("Turns 50"), then the note |
+| `sensor.address_book_today` | The number of dates today |
+| `sensor.address_book_upcoming` | The number of dates in the coming 30 days |
+| Event `address_book_reminder` | Fired every day at 09:00 for each date that is 7 days away, and again on the day itself |
+
+Both sensors carry an attribute `occurrences`, a list with for every date:
+`name`, `date`, `days` (from today), `kind` (`birthday`, `wedding_anniversary`,
+`death_anniversary` or `event`), `years`, `milestone`, `address`, `notes` and
+`person_ids`. The reminder event carries the same fields plus `days_ahead`. The
+attribute is kept out of the recorder, so names and addresses do not end up in
+the history database.
+
+The period of the upcoming sensor, the number of days ahead and the time of the
+reminder are settings of the integration (Configure).
+
+```yaml
+automation:
+  - alias: Birthday reminder
+    triggers:
+      - trigger: event
+        event_type: address_book_reminder
+        event_data:
+          kind: birthday
+    actions:
+      - action: notify.notify
+        data:
+          message: >-
+            {% set e = trigger.event.data %}
+            {% if e.days_ahead == 0 %}Today: {{ e.name }} has a birthday.
+            {% else %}In {{ e.days_ahead }} days: {{ e.name }}{% if e.years %} turns {{ e.years }}{% endif %}.
+            {% if e.address %}Address: {{ e.address }}.{% endif %}{% endif %}
+```
+
+If Home Assistant is not running at the reminder time, that day's reminders are
+not sent later.
 
 ## Services
 

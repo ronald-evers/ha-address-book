@@ -7,6 +7,33 @@
       }
     }
   },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Adresboek",
+        "data": {
+          "upcoming_days": "Dagen in de sensor voor de komende periode",
+          "days_ahead": "Dagen vooraf voor een herinnering",
+          "reminder_time": "Tijdstip van de dagelijkse herinnering"
+        },
+        "data_description": {
+          "upcoming_days": "Hoe ver sensor.address_book_upcoming vooruitkijkt.",
+          "days_ahead": "Het event address_book_reminder wordt zoveel dagen voor een datum afgevuurd, en nog eens op de dag zelf. 0 betekent alleen op de dag zelf.",
+          "reminder_time": "Wanneer het event address_book_reminder elke dag wordt afgevuurd."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "today": {
+        "name": "Vandaag"
+      },
+      "upcoming": {
+        "name": "Komende periode"
+      }
+    }
+  },
   "services": {
     "set_person": {
       "name": "Persoon toevoegen of wijzigen",

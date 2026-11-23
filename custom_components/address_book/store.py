@@ -6,6 +6,7 @@ never leaves the system.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import Any
 
 from homeassistant.core import HomeAssistant, callback
@@ -61,6 +62,7 @@ class AddressBookData:
             minor_version=STORAGE_MINOR_VERSION,
         )
         self._dirty = False
+        self._listeners: list[Callable[[], None]] = []
 
     async def async_load(self) -> None:
         """Read the address book; start empty when there is none yet.
@@ -80,9 +82,30 @@ class AddressBookData:
 
     @callback
     def async_schedule_save(self) -> None:
-        """Write the address book shortly; call this after every change."""
+        """Write the address book shortly; call this after every change.
+
+        Everything that shows the address book is told about the change too.
+        """
         self._dirty = True
         self._store.async_delay_save(self._data_to_save, SAVE_DELAY)
+        self.async_notify()
+
+    @callback
+    def async_add_listener(self, listener: Callable[[], None]) -> Callable[[], None]:
+        """Call ``listener`` after every change; returns how to stop that."""
+        self._listeners.append(listener)
+
+        @callback
+        def remove() -> None:
+            self._listeners.remove(listener)
+
+        return remove
+
+    @callback
+    def async_notify(self) -> None:
+        """Tell the listeners to look again: a change, or a new day."""
+        for listener in list(self._listeners):
+            listener()
 
     async def async_flush(self) -> None:
         """Write now if a change is still waiting to be written."""

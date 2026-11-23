@@ -174,10 +174,7 @@ class ImportPlan:
         def address(household_id: str | None) -> str:
             if household_id is None:
                 return ""
-            household = addresses[household_id]
-            town = " ".join(p for p in (household.postal_code, household.city) if p)
-            parts = (household.street_line, town, household.country)
-            return ", ".join(part for part in parts if part)
+            return addresses[household_id].address_line
 
         return {
             "households": [address(h.id) for h in self.households],

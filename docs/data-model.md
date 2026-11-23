@@ -189,6 +189,27 @@ left exactly as it is, and the integration reports a setup error.
 Removing the integration deletes the file: it holds personal data about other
 people, so nothing is left behind. Backups made earlier still contain it.
 
+## What Home Assistant sees
+
+A calendar (`calendar.address_book`), two sensors (`sensor.address_book_today`
+and `sensor.address_book_upcoming`) and a daily event (`address_book_reminder`).
+All of them show the dates from [Dates on the calendar](#dates-on-the-calendar),
+each described the same way:
+
+| Field | Meaning |
+|---|---|
+| `name` | The person; for a wedding both names ("Tom & Iris"); for an event its title |
+| `date`, `days` | The day, and how many days from today |
+| `kind` | `birthday`, `wedding_anniversary`, `death_anniversary` or `event` |
+| `years`, `milestone` | Age or years since, when the year is known; whether it is a milestone |
+| `address` | The household's address on one line: for a couple, of the first of the two who has one |
+| `notes` | The note of the person, the relationship or the event |
+| `person_ids` | The people it is about |
+
+In the calendar the title is the name for a birthday or event, and says what it
+is otherwise ("Wedding anniversary: Tom & Iris", "In memory of Henk"), in English
+or Dutch after the language of Home Assistant.
+
 ## Importing a birthday calendar
 
 `address_book.import_calendar` reads a calendar in which every entry is a

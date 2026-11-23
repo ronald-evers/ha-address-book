@@ -270,6 +270,13 @@ class Household(_Record):
         """
         return " ".join(part for part in (self.street, self.house_number_full) if part)
 
+    @property
+    def address_line(self) -> str:
+        """The postal address on one line: "Dorpsstraat 2-A, 1234 AB Ons Dorp, NL"."""
+        town = " ".join(part for part in (self.postal_code, self.city) if part)
+        parts = (self.street_line, self.street2, town, self.region, self.country)
+        return ", ".join(part for part in parts if part)
+
 
 @dataclass
 class Group(_Record):
