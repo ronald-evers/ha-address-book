@@ -1,0 +1,227 @@
+set_person:
+  fields:
+    id:
+      selector:
+        text:
+    given_name:
+      example: 'Noor'
+      selector:
+        text:
+    family_name_prefix:
+      example: 'van der'
+      selector:
+        text:
+    family_name:
+      example: 'Berg'
+      selector:
+        text:
+    nickname:
+      selector:
+        text:
+    gender:
+      selector:
+        select:
+          options:
+            - "male"
+            - "female"
+            - "other"
+    birth_date:
+      example: '1980-05-17'
+      selector:
+        text:
+    death_date:
+      selector:
+        text:
+    deceased:
+      selector:
+        boolean:
+    emails:
+      example: '[{"value": "noor@example.com", "label": "home"}]'
+      selector:
+        object:
+    phones:
+      example: '[{"value": "+31 20 555 0100", "label": "mobile"}]'
+      selector:
+        object:
+    household_id:
+      selector:
+        text:
+    group_ids:
+      selector:
+        object:
+    send_birthday_card:
+      selector:
+        boolean:
+    notes:
+      selector:
+        text:
+          multiline: true
+
+remove_person:
+  fields:
+    id:
+      required: true
+      selector:
+        text:
+
+set_household:
+  fields:
+    id:
+      selector:
+        text:
+    name:
+      selector:
+        text:
+    street:
+      example: 'Dorpsstraat'
+      selector:
+        text:
+    house_number:
+      example: '2'
+      selector:
+        text:
+    house_number_addition:
+      example: 'A'
+      selector:
+        text:
+    street2:
+      selector:
+        text:
+    postal_code:
+      example: '1234 AB'
+      selector:
+        text:
+    city:
+      selector:
+        text:
+    region:
+      selector:
+        text:
+    country:
+      example: 'NL'
+      selector:
+        text:
+    address_verified_on:
+      example: '2026-11-01'
+      selector:
+        text:
+    send_seasonal_card:
+      selector:
+        boolean:
+    notes:
+      selector:
+        text:
+          multiline: true
+
+remove_household:
+  fields:
+    id:
+      required: true
+      selector:
+        text:
+
+set_group:
+  fields:
+    id:
+      selector:
+        text:
+    name:
+      example: 'Friends'
+      selector:
+        text:
+    description:
+      selector:
+        text:
+
+remove_group:
+  fields:
+    id:
+      required: true
+      selector:
+        text:
+
+set_relationship:
+  fields:
+    id:
+      selector:
+        text:
+    type:
+      selector:
+        select:
+          options:
+            - "parent"
+            - "spouse"
+            - "partner"
+            - "godparent"
+            - "friend"
+            - "colleague"
+            - "neighbour"
+            - "other"
+    from_id:
+      selector:
+        text:
+    to_id:
+      selector:
+        text:
+    start_date:
+      example: '2018-08-24'
+      selector:
+        text:
+    end_date:
+      selector:
+        text:
+    ended:
+      selector:
+        boolean:
+    label:
+      selector:
+        text:
+    notes:
+      selector:
+        text:
+          multiline: true
+
+remove_relationship:
+  fields:
+    id:
+      required: true
+      selector:
+        text:
+
+set_event:
+  fields:
+    id:
+      selector:
+        text:
+    title:
+      selector:
+        text:
+    date:
+      example: '--06-21'
+      selector:
+        text:
+    yearly:
+      selector:
+        boolean:
+    person_ids:
+      selector:
+        object:
+    notes:
+      selector:
+        text:
+          multiline: true
+
+remove_event:
+  fields:
+    id:
+      required: true
+      selector:
+        text:
+
+find_people:
+  fields:
+    query:
+      required: true
+      example: 'noor berg'
+      selector:
+        text:

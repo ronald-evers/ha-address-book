@@ -6,5 +6,281 @@
         "description": "Add an address book to Home Assistant. Everything you enter is stored locally on this system."
       }
     }
+  },
+  "services": {
+    "set_person": {
+      "name": "Add or change a person",
+      "description": "Adds a new person when no ID is given and returns its ID. With an ID, changes only the fields that are given.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "The person to change. Leave empty to add a new one."
+        },
+        "given_name": {
+          "name": "Given name",
+          "description": "Required for a new person."
+        },
+        "family_name_prefix": {
+          "name": "Family name prefix",
+          "description": "Spoken, but not sorted on."
+        },
+        "family_name": {
+          "name": "Family name",
+          "description": "Without the prefix."
+        },
+        "nickname": {
+          "name": "Nickname",
+          "description": "Also searched."
+        },
+        "gender": {
+          "name": "Gender",
+          "description": "Only picks a word, such as uncle or aunt."
+        },
+        "birth_date": {
+          "name": "Date of birth",
+          "description": "Written as 1980-05-17, --05-17 (year unknown) or 1980 (only the year). Empty clears it."
+        },
+        "death_date": {
+          "name": "Date of death",
+          "description": "Written as 1980-05-17, --05-17 (year unknown) or 1980 (only the year). Empty clears it."
+        },
+        "deceased": {
+          "name": "Deceased",
+          "description": "For someone who has died on an unknown date."
+        },
+        "emails": {
+          "name": "Email addresses",
+          "description": "A list of items with a value and an optional label. Replaces the existing list."
+        },
+        "phones": {
+          "name": "Phone numbers",
+          "description": "A list of items with a value and an optional label. Replaces the existing list."
+        },
+        "household_id": {
+          "name": "Household",
+          "description": "The ID of the household where this person lives. Empty removes the person from the household."
+        },
+        "group_ids": {
+          "name": "Groups",
+          "description": "A list of group IDs. Replaces the existing list."
+        },
+        "send_birthday_card": {
+          "name": "Send a birthday card",
+          "description": "Whether this person gets a birthday card."
+        },
+        "notes": {
+          "name": "Notes",
+          "description": "Free text."
+        }
+      }
+    },
+    "set_household": {
+      "name": "Add or change a household",
+      "description": "Adds a new household when no ID is given and returns its ID. With an ID, changes only the fields that are given.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "The household to change. Leave empty to add a new one."
+        },
+        "name": {
+          "name": "Name",
+          "description": "Optional label; derived from the members when empty."
+        },
+        "street": {
+          "name": "Street",
+          "description": "The street name only."
+        },
+        "house_number": {
+          "name": "House number",
+          "description": "Without the addition."
+        },
+        "house_number_addition": {
+          "name": "House number addition",
+          "description": "Written after the house number with a hyphen: 2-A."
+        },
+        "street2": {
+          "name": "Second address line",
+          "description": "An extra line, when the address needs one."
+        },
+        "postal_code": {
+          "name": "Postal code",
+          "description": "The postal code."
+        },
+        "city": {
+          "name": "City",
+          "description": "The city or town."
+        },
+        "region": {
+          "name": "Region",
+          "description": "State, province or county."
+        },
+        "country": {
+          "name": "Country",
+          "description": "Two-letter country code."
+        },
+        "address_verified_on": {
+          "name": "Address verified on",
+          "description": "The date someone last confirmed this address, as 2026-11-01. Empty clears it."
+        },
+        "send_seasonal_card": {
+          "name": "Send a seasonal card",
+          "description": "Whether this household gets a seasonal card."
+        },
+        "notes": {
+          "name": "Notes",
+          "description": "Free text."
+        }
+      }
+    },
+    "set_group": {
+      "name": "Add or change a group",
+      "description": "Adds a new group when no ID is given and returns its ID. With an ID, changes only the fields that are given.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "The group to change. Leave empty to add a new one."
+        },
+        "name": {
+          "name": "Name",
+          "description": "Required for a new group."
+        },
+        "description": {
+          "name": "Description",
+          "description": "What the group is for."
+        }
+      }
+    },
+    "set_relationship": {
+      "name": "Add or change a relationship",
+      "description": "Adds a new relationship when no ID is given and returns its ID. With an ID, changes only the fields that are given.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "The relationship to change. Leave empty to add a new one."
+        },
+        "type": {
+          "name": "Type",
+          "description": "Required for a new relationship. Only parent, spouse and partner feed the family tree."
+        },
+        "from_id": {
+          "name": "From",
+          "description": "The ID of the first person. For parent and godparent: the parent or godparent."
+        },
+        "to_id": {
+          "name": "To",
+          "description": "The ID of the second person. For parent and godparent: the child."
+        },
+        "start_date": {
+          "name": "Start date",
+          "description": "For spouse: the wedding date. Written as 1980-05-17, --05-17 (year unknown) or 1980 (only the year). Empty clears it."
+        },
+        "end_date": {
+          "name": "End date",
+          "description": "Written as 1980-05-17, --05-17 (year unknown) or 1980 (only the year). Empty clears it."
+        },
+        "ended": {
+          "name": "Ended",
+          "description": "Divorced or separated. A death does not end a relationship."
+        },
+        "label": {
+          "name": "Label",
+          "description": "Free text, used with type other."
+        },
+        "notes": {
+          "name": "Notes",
+          "description": "Free text."
+        }
+      }
+    },
+    "set_event": {
+      "name": "Add or change an event",
+      "description": "Adds a new event when no ID is given and returns its ID. With an ID, changes only the fields that are given.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "The event to change. Leave empty to add a new one."
+        },
+        "title": {
+          "name": "Title",
+          "description": "Required for a new event."
+        },
+        "date": {
+          "name": "Date",
+          "description": "Required for a new event. A yearly event needs at least a month and day (--06-21); a one-off event needs a full date."
+        },
+        "yearly": {
+          "name": "Yearly",
+          "description": "Whether the event returns every year. On by default."
+        },
+        "person_ids": {
+          "name": "People",
+          "description": "A list of the IDs of the people involved. Replaces the existing list."
+        },
+        "notes": {
+          "name": "Notes",
+          "description": "Free text."
+        }
+      }
+    },
+    "remove_person": {
+      "name": "Remove a person",
+      "description": "Removes a person together with their relationships.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "The person to remove."
+        }
+      }
+    },
+    "remove_household": {
+      "name": "Remove a household",
+      "description": "Removes a household. Its members stay, without an address.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "The household to remove."
+        }
+      }
+    },
+    "remove_group": {
+      "name": "Remove a group",
+      "description": "Removes a group. Its members stay.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "The group to remove."
+        }
+      }
+    },
+    "remove_relationship": {
+      "name": "Remove a relationship",
+      "description": "Removes a relationship between two people.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "The relationship to remove."
+        }
+      }
+    },
+    "remove_event": {
+      "name": "Remove an event",
+      "description": "Removes an event.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "The event to remove."
+        }
+      }
+    },
+    "find_people": {
+      "name": "Find people",
+      "description": "Returns the people whose name or nickname contains every word of the search text, with their IDs.",
+      "fields": {
+        "query": {
+          "name": "Search text",
+          "description": "One or more words, in any order."
+        }
+      }
+    }
   }
 }

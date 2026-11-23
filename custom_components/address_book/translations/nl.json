@@ -6,5 +6,281 @@
         "description": "Voeg een adresboek toe aan Home Assistant. Alles wat je invoert wordt lokaal op dit systeem opgeslagen."
       }
     }
+  },
+  "services": {
+    "set_person": {
+      "name": "Persoon toevoegen of wijzigen",
+      "description": "Voegt een persoon toe als er geen ID is opgegeven en geeft het ID terug. Met een ID worden alleen de opgegeven velden gewijzigd.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Het record dat gewijzigd moet worden. Laat leeg om een nieuw record toe te voegen."
+        },
+        "given_name": {
+          "name": "Voornaam",
+          "description": "Verplicht bij een nieuwe persoon."
+        },
+        "family_name_prefix": {
+          "name": "Tussenvoegsel",
+          "description": "Wordt uitgesproken, maar er wordt niet op gesorteerd."
+        },
+        "family_name": {
+          "name": "Achternaam",
+          "description": "Zonder tussenvoegsel."
+        },
+        "nickname": {
+          "name": "Roepnaam",
+          "description": "Hier wordt ook op gezocht."
+        },
+        "gender": {
+          "name": "Geslacht",
+          "description": "Bepaalt alleen het woord, zoals oom of tante."
+        },
+        "birth_date": {
+          "name": "Geboortedatum",
+          "description": "Geschreven als 1980-05-17, --05-17 (jaar onbekend) of 1980 (alleen het jaar). Leeg wist de datum."
+        },
+        "death_date": {
+          "name": "Overlijdensdatum",
+          "description": "Geschreven als 1980-05-17, --05-17 (jaar onbekend) of 1980 (alleen het jaar). Leeg wist de datum."
+        },
+        "deceased": {
+          "name": "Overleden",
+          "description": "Voor iemand die is overleden op een onbekende datum."
+        },
+        "emails": {
+          "name": "E-mailadressen",
+          "description": "Een lijst van items met een value en een optioneel label. Vervangt de bestaande lijst."
+        },
+        "phones": {
+          "name": "Telefoonnummers",
+          "description": "Een lijst van items met een value en een optioneel label. Vervangt de bestaande lijst."
+        },
+        "household_id": {
+          "name": "Huishouden",
+          "description": "Het ID van het huishouden waar deze persoon woont. Leeg haalt de persoon uit het huishouden."
+        },
+        "group_ids": {
+          "name": "Groepen",
+          "description": "Een lijst van groeps-ID's. Vervangt de bestaande lijst."
+        },
+        "send_birthday_card": {
+          "name": "Verjaardagskaart sturen",
+          "description": "Of deze persoon een verjaardagskaart krijgt."
+        },
+        "notes": {
+          "name": "Notities",
+          "description": "Vrije tekst."
+        }
+      }
+    },
+    "set_household": {
+      "name": "Huishouden toevoegen of wijzigen",
+      "description": "Voegt een huishouden toe als er geen ID is opgegeven en geeft het ID terug. Met een ID worden alleen de opgegeven velden gewijzigd.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Het record dat gewijzigd moet worden. Laat leeg om een nieuw record toe te voegen."
+        },
+        "name": {
+          "name": "Naam",
+          "description": "Optioneel; wordt afgeleid van de bewoners als het leeg is."
+        },
+        "street": {
+          "name": "Straat",
+          "description": "Alleen de straatnaam."
+        },
+        "house_number": {
+          "name": "Huisnummer",
+          "description": "Zonder toevoeging."
+        },
+        "house_number_addition": {
+          "name": "Huisnummertoevoeging",
+          "description": "Wordt met een streepje achter het huisnummer geschreven: 2-A."
+        },
+        "street2": {
+          "name": "Tweede adresregel",
+          "description": "Een extra regel, als het adres die nodig heeft."
+        },
+        "postal_code": {
+          "name": "Postcode",
+          "description": "De postcode."
+        },
+        "city": {
+          "name": "Plaats",
+          "description": "De woonplaats."
+        },
+        "region": {
+          "name": "Regio",
+          "description": "Provincie, staat of regio."
+        },
+        "country": {
+          "name": "Land",
+          "description": "Landcode van twee letters."
+        },
+        "address_verified_on": {
+          "name": "Adres gecontroleerd op",
+          "description": "De datum waarop dit adres voor het laatst is bevestigd, als 2026-11-01. Leeg wist de datum."
+        },
+        "send_seasonal_card": {
+          "name": "Kerstkaart sturen",
+          "description": "Of dit huishouden een kerstkaart krijgt."
+        },
+        "notes": {
+          "name": "Notities",
+          "description": "Vrije tekst."
+        }
+      }
+    },
+    "set_group": {
+      "name": "Groep toevoegen of wijzigen",
+      "description": "Voegt een groep toe als er geen ID is opgegeven en geeft het ID terug. Met een ID worden alleen de opgegeven velden gewijzigd.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Het record dat gewijzigd moet worden. Laat leeg om een nieuw record toe te voegen."
+        },
+        "name": {
+          "name": "Naam",
+          "description": "Verplicht bij een nieuwe groep."
+        },
+        "description": {
+          "name": "Omschrijving",
+          "description": "Waar de groep voor dient."
+        }
+      }
+    },
+    "set_relationship": {
+      "name": "Relatie toevoegen of wijzigen",
+      "description": "Voegt een relatie toe als er geen ID is opgegeven en geeft het ID terug. Met een ID worden alleen de opgegeven velden gewijzigd.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Het record dat gewijzigd moet worden. Laat leeg om een nieuw record toe te voegen."
+        },
+        "type": {
+          "name": "Soort",
+          "description": "Verplicht bij een nieuwe relatie. Alleen parent, spouse en partner bepalen de stamboom."
+        },
+        "from_id": {
+          "name": "Van",
+          "description": "Het ID van de eerste persoon. Bij parent en godparent: de ouder of peetouder."
+        },
+        "to_id": {
+          "name": "Naar",
+          "description": "Het ID van de tweede persoon. Bij parent en godparent: het kind."
+        },
+        "start_date": {
+          "name": "Begindatum",
+          "description": "Bij spouse: de trouwdatum. Geschreven als 1980-05-17, --05-17 (jaar onbekend) of 1980 (alleen het jaar). Leeg wist de datum."
+        },
+        "end_date": {
+          "name": "Einddatum",
+          "description": "Geschreven als 1980-05-17, --05-17 (jaar onbekend) of 1980 (alleen het jaar). Leeg wist de datum."
+        },
+        "ended": {
+          "name": "Beëindigd",
+          "description": "Gescheiden of uit elkaar. Een overlijden beëindigt een relatie niet."
+        },
+        "label": {
+          "name": "Label",
+          "description": "Vrije tekst, gebruikt bij soort other."
+        },
+        "notes": {
+          "name": "Notities",
+          "description": "Vrije tekst."
+        }
+      }
+    },
+    "set_event": {
+      "name": "Gebeurtenis toevoegen of wijzigen",
+      "description": "Voegt een gebeurtenis toe als er geen ID is opgegeven en geeft het ID terug. Met een ID worden alleen de opgegeven velden gewijzigd.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Het record dat gewijzigd moet worden. Laat leeg om een nieuw record toe te voegen."
+        },
+        "title": {
+          "name": "Titel",
+          "description": "Verplicht bij een nieuwe gebeurtenis."
+        },
+        "date": {
+          "name": "Datum",
+          "description": "Verplicht bij een nieuwe gebeurtenis. Een jaarlijkse gebeurtenis heeft minstens maand en dag nodig (--06-21); een eenmalige een volledige datum."
+        },
+        "yearly": {
+          "name": "Jaarlijks",
+          "description": "Of de gebeurtenis elk jaar terugkomt. Staat standaard aan."
+        },
+        "person_ids": {
+          "name": "Personen",
+          "description": "Een lijst van de ID's van de betrokken personen. Vervangt de bestaande lijst."
+        },
+        "notes": {
+          "name": "Notities",
+          "description": "Vrije tekst."
+        }
+      }
+    },
+    "remove_person": {
+      "name": "Persoon verwijderen",
+      "description": "Verwijdert een persoon, samen met diens relaties.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Het record dat verwijderd moet worden."
+        }
+      }
+    },
+    "remove_household": {
+      "name": "Huishouden verwijderen",
+      "description": "Verwijdert een huishouden. De bewoners blijven bestaan, zonder adres.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Het record dat verwijderd moet worden."
+        }
+      }
+    },
+    "remove_group": {
+      "name": "Groep verwijderen",
+      "description": "Verwijdert een groep. De leden blijven bestaan.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Het record dat verwijderd moet worden."
+        }
+      }
+    },
+    "remove_relationship": {
+      "name": "Relatie verwijderen",
+      "description": "Verwijdert een relatie tussen twee personen.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Het record dat verwijderd moet worden."
+        }
+      }
+    },
+    "remove_event": {
+      "name": "Gebeurtenis verwijderen",
+      "description": "Verwijdert een gebeurtenis.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Het record dat verwijderd moet worden."
+        }
+      }
+    },
+    "find_people": {
+      "name": "Personen zoeken",
+      "description": "Geeft de personen terug van wie de naam of roepnaam elk woord van de zoektekst bevat, met hun ID.",
+      "fields": {
+        "query": {
+          "name": "Zoektekst",
+          "description": "Een of meer woorden, in willekeurige volgorde."
+        }
+      }
+    }
   }
 }
