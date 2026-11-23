@@ -189,6 +189,32 @@ left exactly as it is, and the integration reports a setup error.
 Removing the integration deletes the file: it holds personal data about other
 people, so nothing is left behind. Backups made earlier still contain it.
 
+## Importing a birthday calendar
+
+`address_book.import_calendar` reads a calendar in which every entry is a
+yearly date: the title is a name, the location a postal address on one line
+(`street number[-addition], postal code city[, country]`) and the description a
+free note. The calendar itself is never changed. By default the service only
+returns a preview; with `dry_run: false` it adds what the preview showed.
+
+The import takes over what is written and guesses nothing:
+
+- Only day and month are taken over, never a year: a calendar entry does not
+  say whether its year is a year of birth.
+- A title with one name becomes a person with that birthday. The first word is
+  the given name; `van`, `de`, `van der` and the like after it are the prefix.
+- A title with several names ("Tom en Iris", "Tom & Iris") becomes those people
+  without a birthday, plus a yearly event with the original title linked to
+  them. Whose date it is, or whether it is a wedding day, is for you to say.
+- The same address, however it is capitalised, is one household. An address
+  that does not have the expected shape is kept whole in `street`.
+- The description becomes the note of the person (or of the event), unread. No
+  relationships are created.
+- What is already there is skipped, so the import can be repeated.
+
+The preview lists what needs a look afterwards under `attention`:
+`several_names`, `address_not_recognised`, `country_not_recognised`, `no_name`.
+
 ## Deliberately left out for now
 
 - **Photos** and a link to a Home Assistant `person` entity.

@@ -8,6 +8,7 @@ it changes only the fields that are given. The rules themselves live in
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import date, timedelta
 from typing import Any
 
 import voluptuous as vol
@@ -21,8 +22,10 @@ from homeassistant.core import (
 )
 from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers import config_validation as cv
+from homeassistant.util import dt as dt_util
 
 from .const import DOMAIN
+from .core.calendar_import import CalendarEntry, plan_import
 from .core.model import (
     Event,
     Gender,
@@ -38,6 +41,11 @@ from .store import AddressBookData
 ATTR_ID = "id"
 ATTR_QUERY = "query"
 SERVICE_FIND_PEOPLE = "find_people"
+SERVICE_IMPORT_CALENDAR = "import_calendar"
+ATTR_ENTITY_ID = "entity_id"
+ATTR_DRY_RUN = "dry_run"
+# Four years ahead, so a birthday on 29 February is seen as well.
+_IMPORT_WINDOW = timedelta(days=4 * 366)
 
 _NULLABLE_TEXT = vol.Any(None, cv.string)
 _ID_LIST = vol.All(cv.ensure_list, [cv.string])
@@ -213,6 +221,47 @@ async def _find_people(call: ServiceCall) -> ServiceResponse:
     }
 
 
+async def _import_calendar(call: ServiceCall) -> ServiceResponse:
+    """Read a birthday calendar; the calendar itself is never changed."""
+    data = _loaded(call.hass)
+    entity_id = call.data[ATTR_ENTITY_ID]
+    if call.hass.states.get(entity_id) is None:
+        raise ServiceValidationError(f"Unknown calendar: {entity_id}")
+    start = dt_util.start_of_local_day()
+    answer = await call.hass.services.async_call(
+        "calendar",
+        "get_events",
+        {
+            ATTR_ENTITY_ID: entity_id,
+            "start_date_time": start,
+            "end_date_time": start + _IMPORT_WINDOW,
+        },
+        blocking=True,
+        return_response=True,
+        context=call.context,
+    )
+    entries = []
+    for item in (answer or {}).get(entity_id, {}).get("events", []):
+        day = date.fromisoformat(str(item["start"])[:10])
+        entries.append(
+            CalendarEntry(
+                title=item.get("summary") or "",
+                month=day.month,
+                day=day.day,
+                location=item.get("location") or "",
+                description=item.get("description") or "",
+            )
+        )
+
+    plan = plan_import(data.book, entries)
+    dry_run = call.data[ATTR_DRY_RUN]
+    summary = plan.summary(data.book)
+    if not dry_run:
+        plan.apply(data.book)
+        data.async_schedule_save()
+    return {ATTR_DRY_RUN: dry_run, **summary}
+
+
 @callback
 def async_setup_services(hass: HomeAssistant) -> None:
     """Register the services; they exist as long as Home Assistant runs."""
@@ -240,5 +289,17 @@ def async_setup_services(hass: HomeAssistant) -> None:
         SERVICE_FIND_PEOPLE,
         _find_people,
         schema=vol.Schema({vol.Required(ATTR_QUERY): cv.string}),
+        supports_response=SupportsResponse.ONLY,
+    )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_IMPORT_CALENDAR,
+        _import_calendar,
+        schema=vol.Schema(
+            {
+                vol.Required(ATTR_ENTITY_ID): cv.entity_domain("calendar"),
+                vol.Optional(ATTR_DRY_RUN, default=True): cv.boolean,
+            }
+        ),
         supports_response=SupportsResponse.ONLY,
     )

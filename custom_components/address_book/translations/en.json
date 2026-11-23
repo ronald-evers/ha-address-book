@@ -281,6 +281,20 @@
           "description": "One or more words, in any order."
         }
       }
+    },
+    "import_calendar": {
+      "name": "Import a birthday calendar",
+      "description": "Turns a calendar into people and households: the title is the name, the location the address on one line, the description a note. Only day and month are taken over, never a year. A title with several names becomes those people and a yearly event. What is already there is skipped. The calendar itself is not changed.",
+      "fields": {
+        "entity_id": {
+          "name": "Calendar",
+          "description": "The calendar to read."
+        },
+        "dry_run": {
+          "name": "Preview only",
+          "description": "On by default: returns what would be added without changing anything. Turn off to import."
+        }
+      }
     }
   }
 }

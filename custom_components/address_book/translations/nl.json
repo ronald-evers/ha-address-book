@@ -281,6 +281,20 @@
           "description": "Een of meer woorden, in willekeurige volgorde."
         }
       }
+    },
+    "import_calendar": {
+      "name": "Verjaardagskalender importeren",
+      "description": "Zet een kalender om in personen en huishoudens: de titel is de naam, de locatie het adres op één regel, de omschrijving een notitie. Alleen dag en maand worden overgenomen, nooit een jaar. Een titel met meerdere namen wordt die personen plus een jaarlijkse gebeurtenis. Wat er al is, wordt overgeslagen. De kalender zelf wordt niet gewijzigd.",
+      "fields": {
+        "entity_id": {
+          "name": "Kalender",
+          "description": "De kalender die gelezen wordt."
+        },
+        "dry_run": {
+          "name": "Alleen proefronde",
+          "description": "Staat standaard aan: geeft terug wat er toegevoegd zou worden, zonder iets te wijzigen. Zet uit om te importeren."
+        }
+      }
     }
   }
 }

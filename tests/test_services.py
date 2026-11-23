@@ -10,7 +10,7 @@ import pytest
 import voluptuous as vol
 import yaml
 
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, ServiceCall, SupportsResponse
 from homeassistant.exceptions import ServiceValidationError
 from homeassistant.setup import async_setup_component
 from pytest_homeassistant_custom_component.common import MockConfigEntry
@@ -254,6 +254,74 @@ async def test_find_people(hass: HomeAssistant, book: AddressBook) -> None:
     assert (await _call(hass, "find_people", query="nobody"))["people"] == []
 
 
+@pytest.fixture
+def birthday_calendar(hass: HomeAssistant) -> list[dict[str, Any]]:
+    """A stand-in for a calendar entity; returns the calls it received."""
+    calls: list[dict[str, Any]] = []
+    events = [
+        {"start": "2027-10-10", "end": "2027-10-11", "summary": "Noor van der Berg",
+         "location": "Dorpsstraat 12-A, 1234 AB Ons Dorp", "description": "Likes horses"},
+        # the same birthday a year later, and one with a time instead of a whole day
+        {"start": "2028-10-10", "end": "2028-10-11", "summary": "Noor van der Berg",
+         "location": "Dorpsstraat 12-A, 1234 AB Ons Dorp", "description": "Likes horses"},
+        {"start": "2027-12-05T09:00:00+01:00", "end": "2027-12-05T10:00:00+01:00", "summary": "Eva"},
+        {"start": "2027-08-24", "end": "2027-08-25", "summary": "Tom en Iris"},
+    ]
+
+    async def get_events(call: ServiceCall) -> dict[str, Any]:
+        calls.append(dict(call.data))
+        return {"calendar.birthdays": {"events": events}}
+
+    hass.services.async_register(
+        "calendar", "get_events", get_events, supports_response=SupportsResponse.ONLY
+    )
+    hass.states.async_set("calendar.birthdays", "off")
+    return calls
+
+
+async def _import(hass: HomeAssistant, **data: Any) -> Any:
+    return await hass.services.async_call(
+        DOMAIN, "import_calendar", data, blocking=True, return_response=True
+    )
+
+
+async def test_import_calendar(
+    hass: HomeAssistant, book: AddressBook, birthday_calendar: list[dict[str, Any]]
+) -> None:
+    """A preview changes nothing; the import adds what the preview showed."""
+    preview = await _import(hass, entity_id="calendar.birthdays")
+    assert preview["dry_run"] is True
+    assert [p["name"] for p in preview["people"]] == ["Noor van der Berg", "Eva", "Tom", "Iris"]
+    assert preview["households"] == ["Dorpsstraat 12-A, 1234 AB Ons Dorp"]
+    assert preview["events"] == [{"title": "Tom en Iris", "date": "--08-24"}]
+    assert preview["attention"] == [{"title": "Tom en Iris", "reason": "several_names"}]
+    assert book.to_dict() == AddressBook().to_dict()
+
+    window = birthday_calendar[0]
+    assert (window["end_date_time"] - window["start_date_time"]).days > 4 * 365
+
+    done = await _import(hass, entity_id="calendar.birthdays", dry_run=False)
+    assert done == {**preview, "dry_run": False}
+    assert len(book.people) == 4
+    birthdays = {str(p.birth_date) for p in book.people.values() if p.birth_date}
+    assert birthdays == {"--10-10", "--12-05"}
+    assert len(book.households) == 1
+    assert len(book.events) == 1
+
+    again = await _import(hass, entity_id="calendar.birthdays", dry_run=False)
+    assert again["people"] == []
+    assert len(again["skipped"]) == 3
+    assert len(book.people) == 4
+
+
+async def test_import_from_unknown_calendar(hass: HomeAssistant, book: AddressBook) -> None:
+    """A calendar that does not exist is refused."""
+    with pytest.raises(ServiceValidationError, match="Unknown calendar"):
+        await _import(hass, entity_id="calendar.nothing")
+    with pytest.raises(vol.Invalid):
+        await _import(hass, entity_id="sensor.nothing")
+
+
 async def test_without_an_address_book(hass: HomeAssistant) -> None:
     """The services say so when the address book is not set up."""
     assert await async_setup_component(hass, DOMAIN, {})
@@ -266,7 +334,10 @@ async def test_without_an_address_book(hass: HomeAssistant) -> None:
 async def test_services_are_described(hass: HomeAssistant, entry: MockConfigEntry) -> None:
     """Every service and field is in services.yaml and in each translation."""
     registered = hass.services.async_services()[DOMAIN]
-    expected: dict[str, set[str]] = {"find_people": {"query"}}
+    expected: dict[str, set[str]] = {
+        "find_people": {"query"},
+        "import_calendar": {"entity_id", "dry_run"},
+    }
     for kind in KINDS:
         expected[f"set_{kind.name}"] = {"id", *kind.fields}
         expected[f"remove_{kind.name}"] = {"id"}

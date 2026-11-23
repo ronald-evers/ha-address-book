@@ -225,3 +225,15 @@ find_people:
       example: 'noor berg'
       selector:
         text:
+
+import_calendar:
+  fields:
+    entity_id:
+      required: true
+      selector:
+        entity:
+          domain: calendar
+    dry_run:
+      default: true
+      selector:
+        boolean:

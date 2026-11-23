@@ -37,6 +37,7 @@ Actions, or from a script).
 | `address_book.set_person`, `set_household`, `set_group`, `set_relationship`, `set_event` | Without `id`: adds a record and returns its `id`. With `id`: changes only the fields that are given |
 | `address_book.remove_person`, `remove_household`, `remove_group`, `remove_relationship`, `remove_event` | Removes the record with that `id` |
 | `address_book.find_people` | Returns the people whose name contains every word of `query`, with their `id` |
+| `address_book.import_calendar` | Turns an existing birthday calendar into people and households. Shows a preview unless `dry_run` is off; see [docs/data-model.md](docs/data-model.md#importing-a-birthday-calendar) |
 
 ```yaml
 action: address_book.set_household
