@@ -13,9 +13,11 @@ from homeassistant.helpers.event import async_track_time_change
 from homeassistant.helpers.typing import ConfigType
 
 from .const import DOMAIN
+from .panel import async_register_panel, async_remove_panel, async_setup_static_path
 from .reminder import async_setup_reminders
 from .services import async_setup_services
 from .store import AddressBookData, AddressBookLoadError
+from .websocket_api import async_setup_websocket_api
 
 type AddressBookConfigEntry = ConfigEntry[AddressBookData]
 
@@ -24,8 +26,10 @@ PLATFORMS = [Platform.CALENDAR, Platform.SENSOR]
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
-    """Register the services."""
+    """Register the services and what the panel needs."""
     async_setup_services(hass)
+    async_setup_websocket_api(hass)
+    await async_setup_static_path(hass)
     return True
 
 
@@ -50,6 +54,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: AddressBookConfigEntry) 
     entry.async_on_unload(entry.add_update_listener(_async_options_changed))
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    await async_register_panel(hass)
     return True
 
 
@@ -62,6 +67,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: AddressBookConfigEntry)
     """Unload the config entry, writing any change that is still waiting."""
     unloaded = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unloaded:
+        async_remove_panel(hass)
         await entry.runtime_data.async_flush()
     return unloaded
 

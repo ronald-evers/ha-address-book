@@ -3,9 +3,10 @@
 An address book inside Home Assistant: the people you know, where they live, how
 they are related, and the dates that matter.
 
-> **Early development.** Storage, services, a calendar, two sensors and a daily
-> reminder event are built and tested. There is no panel yet: the address book
-> is filled through services.
+> **Early development.** Storage, a panel in the sidebar, services, a calendar,
+> two sensors and a daily reminder event are built and tested. The panel adds,
+> changes and removes people; linking family afterwards, groups and events
+> still go through services.
 
 ## What it is for
 
@@ -26,6 +27,23 @@ detail.
    cousin, mother-in-law and so on are worked out from those.
 3. People are **records, not entities**: a large address book does not flood
    Home Assistant with sensors.
+
+## The panel
+
+The integration adds **Address Book** to the sidebar, for everyone who logs in.
+
+- **People**: everyone sorted by family name, with birthday and address; a
+  search box; and the dates that are coming up.
+- **One person**: age and next birthday, the address with who else lives
+  there, phone and e-mail, the note, and family: partner, children and parents
+  as entered, and everyone else (sibling, grandparent, aunt, cousin) worked
+  out from those.
+- **Add or change a person** in one form. You never see a household: you
+  choose "with someone already in the address book" or "at a new address".
+  When adding, you can say whose child, parent or partner the person is.
+
+Removing a person also removes their family links, and an address where nobody
+lives any more.
 
 ## In Home Assistant
 
@@ -69,8 +87,8 @@ not sent later.
 
 ## Services
 
-Until there is a panel, records are entered with services (Developer tools →
-Actions, or from a script).
+Everything the panel does, and what it does not do yet, is also available as
+services (Developer tools → Actions, or from a script).
 
 | Service | What it does |
 |---|---|
