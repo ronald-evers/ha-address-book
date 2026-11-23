@@ -1,0 +1,10 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Adresboek",
+        "description": "Voeg een adresboek toe aan Home Assistant. Alles wat je invoert wordt lokaal op dit systeem opgeslagen."
+      }
+    }
+  }
+}

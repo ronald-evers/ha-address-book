@@ -1,0 +1,10 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Address Book",
+        "description": "Add an address book to Home Assistant. Everything you enter is stored locally on this system."
+      }
+    }
+  }
+}
