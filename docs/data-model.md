@@ -171,12 +171,20 @@ Home Assistant backup:
 }
 ```
 
+The file is `.storage/address_book`. A change is written about a second after it
+is made, so several changes in a row become one write.
+
 Home Assistant's storage helper adds a schema version, which makes later
 changes to this model a migration instead of a manual edit. Unknown fields are
-ignored on load, so data written by a newer version still opens in an older one.
+ignored on load, so data written by a newer minor version still opens in an
+older one. Data from a newer major version is refused.
 
 On load every reference is checked; a file pointing at a person or household
-that does not exist is refused rather than silently repaired.
+that does not exist is refused rather than silently repaired. A refused file is
+left exactly as it is, and the integration reports a setup error.
+
+Removing the integration deletes the file: it holds personal data about other
+people, so nothing is left behind. Backups made earlier still contain it.
 
 ## Deliberately left out for now
 

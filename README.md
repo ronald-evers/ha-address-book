@@ -3,9 +3,9 @@
 An address book inside Home Assistant: the people you know, where they live, how
 they are related, and the dates that matter.
 
-> **Early development.** The data model and its rules are built and tested. The
-> integration installs but does not do anything in Home Assistant yet: storage,
-> calendar, sensors and the address book panel are next.
+> **Early development.** The data model, its rules and the storage are built and
+> tested. The integration installs but there is no way to enter anything yet:
+> services, calendar, sensors and the address book panel are next.
 
 ## What it is for
 
