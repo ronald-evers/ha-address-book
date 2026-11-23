@@ -58,7 +58,9 @@ def _small_book() -> AddressBook:
     book.put_household(
         Household(
             id="h1",
-            street="Dorpsstraat 12A",
+            street="Dorpsstraat",
+            house_number="12",
+            house_number_addition="A",
             postal_code="1234 AB",
             city="Ons Dorp",
             country="NL",
@@ -230,6 +232,19 @@ def test_record_validation() -> None:
         Event(id="x", title="Once", date=PartialDate.parse("--05-01"), yearly=False)
     with pytest.raises(ValueError):
         Household.from_dict({"id": "h", "address_verified_on": "01-11-2026"})
+    with pytest.raises(ValueError, match="needs a house number"):
+        Household(id="h", street="Dorpsstraat", house_number_addition="A")
+
+
+def test_street_line() -> None:
+    """The house number and its addition are kept apart and joined by a hyphen."""
+    assert _small_book().households["h1"].street_line == "Dorpsstraat 12-A"
+    plain = Household(id="h", street="Kerkweg", house_number="7")
+    assert plain.house_number_full == "7"
+    assert plain.street_line == "Kerkweg 7"
+    assert Household(id="h", house_number="12", house_number_addition="bis").house_number_full == "12-bis"
+    assert Household(id="h", street="Kerkweg").street_line == "Kerkweg"
+    assert Household(id="h").street_line == ""
 
 
 def test_deceased() -> None:

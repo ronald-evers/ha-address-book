@@ -235,7 +235,9 @@ class Household(_Record):
 
     id: str
     name: str = ""  # optional label; derived from the members when empty
-    street: str = ""  # street and house number on one line
+    street: str = ""  # the street name only
+    house_number: str = ""  # text: "2"
+    house_number_addition: str = ""  # "A", "bis"; written after a hyphen
     street2: str = ""
     postal_code: str = ""
     city: str = ""
@@ -248,6 +250,25 @@ class Household(_Record):
     _converters: ClassVar[dict[str, Callable[[Any], Any]]] = {
         "address_verified_on": _iso_date,
     }
+
+    def __post_init__(self) -> None:
+        if self.house_number_addition.strip() and not self.house_number.strip():
+            raise ValueError("a house number addition needs a house number")
+
+    @property
+    def house_number_full(self) -> str:
+        """House number with its addition: "2-A"."""
+        if self.house_number_addition:
+            return f"{self.house_number}-{self.house_number_addition}"
+        return self.house_number
+
+    @property
+    def street_line(self) -> str:
+        """Street and house number as written on an envelope: "Dorpsstraat 2-A".
+
+        Street first, then the number, for every country (for now).
+        """
+        return " ".join(part for part in (self.street, self.house_number_full) if part)
 
 
 @dataclass

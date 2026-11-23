@@ -43,7 +43,9 @@ Assistant imports; every rule on this page has a test in `tests/core/`.
 |---|---|---|
 | `id` | string | |
 | `name` | string | Optional label; derived from the members when empty |
-| `street` | string | Street and house number on one line |
+| `street` | string | The street name only |
+| `house_number` | string | Text, e.g. `2` |
+| `house_number_addition` | string | e.g. `A` or `bis`; needs a house number |
 | `street2` | string | |
 | `postal_code`, `city`, `region` | string | |
 | `country` | string | ISO 3166-1 alpha-2, e.g. `NL` |
@@ -51,9 +53,10 @@ Assistant imports; every rule on this page has a test in `tests/core/`.
 | `send_seasonal_card` | boolean | One Christmas card per household |
 | `notes` | string | |
 
-The address follows the vCard layout (one street line) rather than the Dutch
-habit of a separate house number, so it works for any country and maps directly
-onto vCard export and postal APIs.
+The house number and its addition are separate fields, as Dutch addresses and
+postal lookups need them. Written out they are joined by a hyphen, after the
+street: `Dorpsstraat 2-A`. That order is used for every country for now; a
+per-country order (`2 Main Street`) comes with vCard export.
 
 ### Group
 
@@ -195,7 +198,6 @@ people, so nothing is left behind. Backups made earlier still contain it.
 
 ## Open questions
 
-1. Is one street line enough, or do you want the house number as its own field?
-2. Card flags are per person (birthday) and per household (seasonal). Is that
-   the right split?
-3. Are the milestone lists right, and should they be configurable?
+None at the moment. Decided: the house number is its own field; card flags are
+per person (birthday) and per household (seasonal); the milestone lists are the
+default and become configurable later.
