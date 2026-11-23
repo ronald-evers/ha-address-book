@@ -1,12 +1,12 @@
 {
   "domain": "address_book",
   "name": "Address Book",
-  "codeowners": ["@ronaldandai"],
+  "codeowners": ["@ronald-evers"],
   "config_flow": true,
-  "documentation": "https://github.com/ronaldandai/ha-address-book",
+  "documentation": "https://github.com/ronald-evers/ha-address-book",
   "integration_type": "service",
   "iot_class": "calculated",
-  "issue_tracker": "https://github.com/ronaldandai/ha-address-book/issues",
+  "issue_tracker": "https://github.com/ronald-evers/ha-address-book/issues",
   "requirements": [],
   "single_config_entry": true,
   "version": "0.1.0"
